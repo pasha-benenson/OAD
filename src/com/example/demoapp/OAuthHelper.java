@@ -40,7 +40,13 @@ public class OAuthHelper {
 	public static String AccessToken="";
 	public static final String PREFS_NAME = "OAuth_demo_PREF_NAME";
 	private static Activity activity;
-
+	private static final String BaseURL = "https://sso.pbens.com:9031";
+	private static final String AuthEndPoint="/as/authorization.oauth2"; 
+//	private static final String AuthEndPointParams = "?client_id=mobile_client&response_type=code&pfidpadapterid=Form1";
+	private static final String clientId = "mobile_client2";
+	private static final String AuthEndPointParams = "?client_id=" + clientId + "&response_type=code&PartnerIdpId=PBENS:SAML2";
+	
+    private static final String AuthUrl = BaseURL + AuthEndPoint + AuthEndPointParams;
 
 	static Time expires=new Time();
 	public OAuthHelper(Activity ac) {
@@ -113,7 +119,7 @@ public class OAuthHelper {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("code", code));
 			params.add(new BasicNameValuePair("grant_type", "authorization_code"));
-			params.add(new BasicNameValuePair("client_id", "mobile_client"));
+			params.add(new BasicNameValuePair("client_id", clientId));
 			
 
 			OutputStream os = https.getOutputStream();
@@ -280,7 +286,7 @@ public class OAuthHelper {
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("refresh_token", RefreshToken));
 				params.add(new BasicNameValuePair("grant_type", "refresh_token"));
-				params.add(new BasicNameValuePair("client_id", "mobile_client"));
+				params.add(new BasicNameValuePair("client_id", clientId));
 
 				OutputStream os = https.getOutputStream();
 				BufferedWriter writer = new BufferedWriter(
@@ -334,8 +340,10 @@ public class OAuthHelper {
 		Time time=new Time();
 		time.setToNow();
 		
-    	Uri uriUrl = Uri.parse("https://sso.pbens.com:9031/as/authorization.oauth2?client_id=mobile_client&response_type=code&pfidpadapterid=Form1&time=" + time.toString());
-		Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+ //   	Uri uriUrl = Uri.parse("https://sso.pbens.com:9031/as/authorization.oauth2?client_id=mobile_client&response_type=code&pfidpadapterid=Form1&time=" + time.toString());
+    	Uri uriUrl = Uri.parse(AuthUrl + "&time=" + time.toString());
+
+    	Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
 		activity.startActivity(launchBrowser);
 	}
 	public static void clear(){
