@@ -25,12 +25,15 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
+        public static final int AuthResourceCredentials=0x7f070008;
         public static final int Button_Clear=0x7f070003;
         public static final int Button_callapi_id=0x7f070004;
         public static final int Button_callapi_time=0x7f070005;
+        public static final int bottom_buttons=0x7f070001;
         public static final int button_auth=0x7f070002;
         public static final int fullscreen_content=0x7f070000;
-        public static final int fullscreen_content_controls=0x7f070001;
+        public static final int userName=0x7f070006;
+        public static final int userPassword=0x7f070007;
     }
     public static final class layout {
         public static final int activity_fullscreen=0x7f030000;

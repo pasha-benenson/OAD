@@ -14,6 +14,7 @@ import android.os.Handler;
 //import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 //import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -94,7 +95,7 @@ public class FullscreenActivity extends Activity {
 		}
 		{
 
-			final View controlsView = findViewById(R.id.fullscreen_content_controls);
+			//pb final View controlsView = findViewById(R.id.fullscreen_content_controls);
 			final View contentView = findViewById(R.id.fullscreen_content);
 			TextView t = (TextView) contentView;
 			t.setText(text);
@@ -118,27 +119,27 @@ public class FullscreenActivity extends Activity {
 								// the
 								// in-layout UI controls at the bottom of the
 								// screen.
-								if (mControlsHeight == 0) {
+/*	pb							if (mControlsHeight == 0) {
 									mControlsHeight = controlsView.getHeight();
-								}
+								}*/
 								if (mShortAnimTime == 0) {
 									mShortAnimTime = getResources()
 											.getInteger(
 													android.R.integer.config_shortAnimTime);
 								}
-								controlsView
+								/*pbcontrolsView
 										.animate()
 										.translationY(
 												visible ? 0 : mControlsHeight)
-										.setDuration(mShortAnimTime);
+										.setDuration(mShortAnimTime);*/
 							} else {
 								// If the ViewPropertyAnimator APIs aren't
 								// available, simply show or hide the in-layout
 								// UI
 								// controls.
-								controlsView
+								/*pbcontrolsView
 										.setVisibility(visible ? View.VISIBLE
-												: View.GONE);
+												: View.GONE);*/
 							}
 
 							if (visible && AUTO_HIDE) {
@@ -256,6 +257,27 @@ public class FullscreenActivity extends Activity {
 			t.setText("");
 			OAuthHelper oh = new OAuthHelper(this);
 			String text = oh.callapi("?method=time");
+			if (!text.isEmpty())
+				t.setText(OAuthHelper.fromJSONtoTable(text));
+			// System.out.println(uriUrl);
+
+	}
+		public void click_AuthResourceCredentials(View view) {
+			// Do something in response to button
+			function_name="SetRefreshToken";
+//			final View controlsView = findViewById(R.id.fullscreen_content_controls);
+			final View contentView = findViewById(R.id.fullscreen_content);
+			TextView t = (TextView) contentView;
+			
+			t.setText("");
+			EditText editText = (EditText)findViewById(R.id.userName);
+			String Username = editText.getText().toString();
+			
+			editText = (EditText)findViewById(R.id.userPassword);
+			String Password = editText.getText().toString();
+			
+			OAuthHelper oh = new OAuthHelper(this);
+			String text = oh.setRefreshToken(Username,Password);
 			if (!text.isEmpty())
 				t.setText(OAuthHelper.fromJSONtoTable(text));
 			// System.out.println(uriUrl);

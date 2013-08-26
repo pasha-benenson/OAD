@@ -42,13 +42,18 @@ public class OAuthHelper {
 	private static Activity activity;
 	private static final String BaseURL = "https://sso.pbens.com:9031";
 	private static final String AuthEndPoint="/as/authorization.oauth2"; 
+	private static final String TokenEndPoint="/as/token.oauth2";
 //	private static final String AuthEndPointParams = "?client_id=mobile_client&response_type=code&pfidpadapterid=Form1";
 	private static final String clientId = "mobile_client2";
+	private static final String clientSecret = "lkjlkj";
 	private static final String AuthEndPointParams = "?client_id=" + clientId + "&response_type=code&PartnerIdpId=PBENS:SAML2";
 	
     private static final String AuthUrl = BaseURL + AuthEndPoint + AuthEndPointParams;
 
+    private static final String WebServiceURL = "http://pbens.com/api/index.php";
 	static Time expires=new Time();
+	
+	
 	public OAuthHelper(Activity ac) {
 		activity=ac;
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -88,14 +93,19 @@ public class OAuthHelper {
 	
 
 	}
+	public  String setRefreshToken(String Username, String Password){
+		return callRefreshToken("",Username, Password);
+	}
 	public  String setRefreshToken(String data){
+		return callRefreshToken(data,"","");
+	}
+	
+	private  String callRefreshToken(String data, String Username, String Password){
 		String rtoken="";
-		String code=data.substring( data.indexOf("?code=")+6);
-		System.out.println(code);
 		
 		URL hurl;
 		try {
-			hurl = new URL("https://sso.pbens.com:9031/as/token.oauth2");
+			hurl = new URL(BaseURL + TokenEndPoint);
 	
 			HostnameVerifier v = new HostnameVerifier() {
 							@Override
@@ -117,11 +127,28 @@ public class OAuthHelper {
 			https.setDoOutput(true);
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			if (Username==""){
+				String code=data.substring( data.indexOf("?code=")+6);
+				System.out.println("code = " + code);
+
+			
 			params.add(new BasicNameValuePair("code", code));
 			params.add(new BasicNameValuePair("grant_type", "authorization_code"));
 			params.add(new BasicNameValuePair("client_id", clientId));
+			params.add(new BasicNameValuePair("client_secret", "lkjlkj"));
 			
-
+			}
+			else {
+				
+				
+				params.add(new BasicNameValuePair("grant_type", "password"));
+				params.add(new BasicNameValuePair("client_id", clientId));
+				params.add(new BasicNameValuePair("client_secret", "lkjlkj"));
+				params.add(new BasicNameValuePair("username", Username));
+				params.add(new BasicNameValuePair("password", Password));
+				params.add(new BasicNameValuePair("validator_id", "ldap1"));
+			
+			}
 			OutputStream os = https.getOutputStream();
 			BufferedWriter writer = new BufferedWriter(
 			        new OutputStreamWriter(os, "UTF-8"));
@@ -171,7 +198,7 @@ public class OAuthHelper {
 		}
 		return rtoken;
 	}
-	public   String getRefreshToken(){
+	private   String getRefreshToken(){
 		System.out.println("getRefreshToken "+ RefreshToken );
 
 		if (RefreshToken==""){
@@ -210,7 +237,7 @@ public class OAuthHelper {
 	public  String callapi(String queryparameter){
 		URL hurl;
 		try {
-			hurl = new URL("http://pbens.com/api/index.php"+ queryparameter);
+			hurl = new URL(WebServiceURL + queryparameter);
 	
 		
 			
@@ -287,6 +314,7 @@ public class OAuthHelper {
 				params.add(new BasicNameValuePair("refresh_token", RefreshToken));
 				params.add(new BasicNameValuePair("grant_type", "refresh_token"));
 				params.add(new BasicNameValuePair("client_id", clientId));
+				params.add(new BasicNameValuePair("client_secret", clientSecret));
 
 				OutputStream os = https.getOutputStream();
 				BufferedWriter writer = new BufferedWriter(
