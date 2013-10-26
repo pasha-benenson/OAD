@@ -101,7 +101,7 @@ public class OAuthHelper {
 	}
 	
 	private  String callRefreshToken(String data, String Username, String Password){
-		String rtoken="";
+		
 		
 		URL hurl;
 		try {
@@ -196,16 +196,20 @@ public class OAuthHelper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return rtoken;
+		return RefreshToken;
 	}
-	private   String getRefreshToken(){
+	public static  String readRefreshToken(){
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+            return preferences.getString("RefreshToken","");            		
+	}	
+	public   String getRefreshToken(boolean authenticate){
 		System.out.println("getRefreshToken "+ RefreshToken );
 
 		if (RefreshToken==""){
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 		    RefreshToken = preferences.getString("RefreshToken","");
 		    System.out.println("got token from storage "+ RefreshToken );
-		    if (RefreshToken==""){
+		    if (RefreshToken=="" && authenticate){
 		    	
 		    	authenticate();
 		    }
@@ -213,6 +217,7 @@ public class OAuthHelper {
 		}
 		
             return RefreshToken;
+            
 		
 	}
 	private static String getQuery(List<NameValuePair> params) throws UnsupportedEncodingException
@@ -286,7 +291,7 @@ public class OAuthHelper {
 		if (AccessToken!="" && expires.after(t))
 			return AccessToken;
 		else{
-			RefreshToken=getRefreshToken();
+			RefreshToken=getRefreshToken(false);
 			// use refresh token to get access token
 			URL hurl;
 			try {

@@ -52,10 +52,7 @@ public class FullscreenActivity extends Activity {
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
 	private SystemUiHider mSystemUiHider;
-//	private TextView myText;
-	private String text = "Not Authenticated";
 
-	private static String function_name="";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +65,12 @@ public class FullscreenActivity extends Activity {
 		System.out.println(intent);
 		OAuthHelper oh = new OAuthHelper(this);
 		
+		
+		
+		final View RTView = findViewById(R.id.RT_text);
+		TextView rtTextView = (TextView) RTView;
+		rtTextView.setText(oh.getRefreshToken(false));
+
 		String action = intent.getAction();
 		if (action.equals(Intent.ACTION_VIEW)) {
 			String data = intent.getDataString();
@@ -75,30 +78,16 @@ public class FullscreenActivity extends Activity {
 			System.out.println(data);
 			
 			oh.setRefreshToken(data); 
-			text = "Refresh Token is \n" + OAuthHelper.RefreshToken;
-			if (function_name=="time"){
-				function_name="";
-				text = oh.callapi("?method=time");
-				if (!text.isEmpty())
-					text=(OAuthHelper.fromJSONtoTable(text));
+			rtTextView.setText(oh.getRefreshToken(false));
 
-			}
-			if (function_name=="id"){
-				function_name="";
-				text = oh.callapi("?method=id");
-				if (!text.isEmpty())
-					text=(OAuthHelper.fromJSONtoTable(text));
-
-			}
-			
+	
 			
 		}
 		{
 
-			//pb final View controlsView = findViewById(R.id.fullscreen_content_controls);
+			
 			final View contentView = findViewById(R.id.fullscreen_content);
-			TextView t = (TextView) contentView;
-			t.setText(text);
+		
 			// Set up an instance of SystemUiHider to control the system UI for
 			// this activity.
 			mSystemUiHider = SystemUiHider.getInstance(this, contentView,
@@ -107,41 +96,19 @@ public class FullscreenActivity extends Activity {
 			mSystemUiHider
 					.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
 						// Cached values.
-						int mControlsHeight;
+						
 						int mShortAnimTime;
 
 						@Override
 						@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 						public void onVisibilityChange(boolean visible) {
 							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-								// If the ViewPropertyAnimator API is available
-								// (Honeycomb MR2 and later), use it to animate
-								// the
-								// in-layout UI controls at the bottom of the
-								// screen.
-/*	pb							if (mControlsHeight == 0) {
-									mControlsHeight = controlsView.getHeight();
-								}*/
 								if (mShortAnimTime == 0) {
 									mShortAnimTime = getResources()
 											.getInteger(
 													android.R.integer.config_shortAnimTime);
 								}
-								/*pbcontrolsView
-										.animate()
-										.translationY(
-												visible ? 0 : mControlsHeight)
-										.setDuration(mShortAnimTime);*/
-							} else {
-								// If the ViewPropertyAnimator APIs aren't
-								// available, simply show or hide the in-layout
-								// UI
-								// controls.
-								/*pbcontrolsView
-										.setVisibility(visible ? View.VISIBLE
-												: View.GONE);*/
-							}
-
+							} 
 							if (visible && AUTO_HIDE) {
 								// Schedule a hide().
 								delayedHide(AUTO_HIDE_DELAY_MILLIS);
@@ -149,8 +116,6 @@ public class FullscreenActivity extends Activity {
 						}
 					});
 
-			// Set up the user interaction to manually show or hide the system
-			// UI.
 			contentView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -162,10 +127,6 @@ public class FullscreenActivity extends Activity {
 				}
 			});
 
-			// Upon interacting with UI controls, delay any scheduled hide()
-			// operations to prevent the jarring behavior of controls going away
-			// while interacting with the UI.
-			// findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 		}
 	}
 
@@ -173,10 +134,6 @@ public class FullscreenActivity extends Activity {
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 
-		// Trigger the initial hide() shortly after the activity has been
-		// created, to briefly hint to the user that UI controls
-		// are available.
-		// pb delayedHide(100);
 	}
 
 	/**
@@ -226,45 +183,50 @@ public class FullscreenActivity extends Activity {
 		OAuthHelper.clear();
 
 //		final View controlsView = findViewById(R.id.fullscreen_content_controls);
-		final View contentView = findViewById(R.id.fullscreen_content);
-		TextView t = (TextView) contentView;
-		t.setText("clear");
+		final View RTView = findViewById(R.id.RT_text);
+		TextView rtTextView = (TextView) RTView;
+		rtTextView.setText(OAuthHelper.readRefreshToken());
 
 		// System.out.println(uriUrl);
 	}
 
 	public void click_callapi_id(View view) {
 		// Do something in response to button
-		function_name="id";
+//		function_name="id";
 //		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
 		TextView t = (TextView) contentView;
 		
-		t.setText("");
+		
 		OAuthHelper oh = new OAuthHelper(this);
 		String text = oh.callapi("?method=id");
 		if (!text.isEmpty())
 			t.setText(OAuthHelper.fromJSONtoTable(text));
+		else 
+			t.setText("Error:  Could not execute");
+		
 		// System.out.println(uriUrl);
 	}
 		public void click_callapi_time(View view) {
 			// Do something in response to button
-			function_name="time";
+//			function_name="time";
 //			final View controlsView = findViewById(R.id.fullscreen_content_controls);
 			final View contentView = findViewById(R.id.fullscreen_content);
 			TextView t = (TextView) contentView;
 			
-			t.setText("");
+			//t.setText("");
 			OAuthHelper oh = new OAuthHelper(this);
 			String text = oh.callapi("?method=time");
 			if (!text.isEmpty())
 				t.setText(OAuthHelper.fromJSONtoTable(text));
+			else 
+				t.setText("Error:  Could not execute");
 			// System.out.println(uriUrl);
 
 	}
 		public void click_AuthResourceCredentials(View view) {
 			// Do something in response to button
-			function_name="SetRefreshToken";
+//			function_name="SetRefreshToken";
 //			final View controlsView = findViewById(R.id.fullscreen_content_controls);
 			final View contentView = findViewById(R.id.fullscreen_content);
 			TextView t = (TextView) contentView;
@@ -278,9 +240,11 @@ public class FullscreenActivity extends Activity {
 			
 			OAuthHelper oh = new OAuthHelper(this);
 			String text = oh.setRefreshToken(Username,Password);
-			if (!text.isEmpty())
-				t.setText(OAuthHelper.fromJSONtoTable(text));
-			// System.out.println(uriUrl);
+			final View RTView = findViewById(R.id.RT_text);
+			TextView rtTextView = (TextView) RTView;
+			rtTextView.setText(text);
+
+			
 
 	}
 }

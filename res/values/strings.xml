@@ -3,10 +3,12 @@
 
     <string name="app_name">DemoApp</string>
     <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="authenticate">Get \n RT</string>
+    <string name="dummy_content"></string>
+    <string name="authenticate">Get RT</string>
     <string name="clear">Clear</string>
     <string name="addAccount">AddAccount</string>
  	<string name="callapi_id">Call API \n ID</string>
 	<string name="callapi_time">Call API \n Time</string>
+	<string name="submit_auth">Authenticate using Username/Password</string>
+	<string name="RefreshToken">Refresh Token:</string>
 </resources>
