@@ -4,11 +4,14 @@
     <string name="app_name">DemoApp</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content"></string>
-    <string name="authenticate">Get RT</string>
+    <string name="authenticate">Code\nFlow</string>
     <string name="clear">Clear</string>
     <string name="addAccount">AddAccount</string>
- 	<string name="callapi_id">Call API \n ID</string>
-	<string name="callapi_time">Call API \n Time</string>
-	<string name="submit_auth">Authenticate using Username/Password</string>
-	<string name="RefreshToken">Refresh Token:</string>
+    <string name="call_userinfo">Call\nUser\nInfo</string>
+ 	<string name="callapi_id">Call\nAPI\nID</string>
+	<string name="callapi_time">Call\nAPI\nTime</string>
+	<string name="submit_auth">Resource Owner Flow</string>
+	<string name="RefreshToken">Refresh Token: </string>
+	<string name="OIDC">OIDC Claims: </string>
+	<string name="APICall_Label">API Call Return Values: </string>
 </resources>

@@ -25,6 +25,9 @@ import org.apache.http.message.BasicNameValuePair;
 //import org.json.JSONException;
 import org.json.JSONObject;
 
+//import net.oauth.jsontoken;
+import org.json.*;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,20 +36,23 @@ import android.net.Uri;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.util.Base64;
 //import android.content.*;
 
 public class OAuthHelper {
 	public static String RefreshToken="";
 	public static String AccessToken="";
+	public static String OIDCClaims="";
 	public static final String PREFS_NAME = "OAuth_demo_PREF_NAME";
 	private static Activity activity;
 	private static final String BaseURL = "https://sso.pbens.com:9031";
+	private static final String UserInfo = "/idp/userinfo.openid";
 	private static final String AuthEndPoint="/as/authorization.oauth2"; 
 	private static final String TokenEndPoint="/as/token.oauth2";
 //	private static final String AuthEndPointParams = "?client_id=mobile_client&response_type=code&pfidpadapterid=Form1";
 	private static final String clientId = "mobile_client2";
 	private static final String clientSecret = "lkjlkj";
-	private static final String AuthEndPointParams = "?client_id=" + clientId + "&response_type=code&PartnerIdpId=PBENS:SAML2";
+	private static final String AuthEndPointParams = "?client_id=" + clientId + "&response_type=code&PartnerIdpId=PBENS:SAML2&scope=openid%20profile%20address%20email%20phone";
 	
     private static final String AuthUrl = BaseURL + AuthEndPoint + AuthEndPointParams;
 
@@ -192,6 +198,17 @@ public class OAuthHelper {
 			System.out.println("Access Token" + AccessToken);
 			System.out.print("time now "); System.out.println(t);
 			System.out.print("expires "); System.out.println(expires);
+			
+			// Get ID_Token if it is there
+			
+			String id_token=json.getString("id_token");
+//			
+			String encoded_claims=id_token.split("\\.")[1];
+			String claims = new String(Base64.decode(encoded_claims,Base64.DEFAULT), "UTF-8");
+			System.out.println("claims: " + claims);
+			
+			OIDCClaims=fromJSONtoTable(claims);
+			OIDCClaims=OIDCClaims.replace("https:\\/\\/\n","https://");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -394,4 +411,59 @@ public class OAuthHelper {
 		
 		return sjson.replace(",", ",\n");
 	}
-	}
+	
+	public  String getUserInfo(){
+		URL hurl;
+		try {
+			
+			hurl = new URL(BaseURL + UserInfo);	
+			HostnameVerifier v = new HostnameVerifier() {
+							@Override
+				public boolean verify(String arg0, SSLSession arg1) {
+					// TODO Auto-generated method stub
+					return true;
+				}
+			};
+           
+            
+		
+			HttpsURLConnection https = (HttpsURLConnection) hurl.openConnection();
+			https.setHostnameVerifier(v);
+			https.setReadTimeout(10000);
+			https.setConnectTimeout(15000);
+			https.setRequestMethod("GET");
+			https.setDoInput(true);
+			https.setDoOutput(true);
+			
+			
+			
+            https.setRequestProperty("Authorization", "Bearer " + getAccessToken());
+
+			https.connect();
+		      int status = https.getResponseCode();
+
+		    System.out.println("status code= " + status);
+		        
+		    BufferedReader br = new BufferedReader(new InputStreamReader(https.getInputStream()));
+		    StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+			br.close();
+			String rdata=sb.toString();	
+			/*System.out.println("response data: "+ rdata);
+			JSONObject json = new JSONObject(rdata);
+			System.out.println(json);*/
+
+		return rdata;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+		
+	}	
+}
+
+

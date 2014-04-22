@@ -68,9 +68,14 @@ public class FullscreenActivity extends Activity {
 		
 		
 		final View RTView = findViewById(R.id.RT_text);
+		final View OIDCView = findViewById(R.id.OIDC_text);
+		
 		TextView rtTextView = (TextView) RTView;
 		rtTextView.setText(oh.getRefreshToken(false));
-
+		
+		TextView oidcTextView = (TextView) OIDCView;
+		oidcTextView.setText(oh.OIDCClaims);
+		
 		String action = intent.getAction();
 		if (action.equals(Intent.ACTION_VIEW)) {
 			String data = intent.getDataString();
@@ -79,7 +84,7 @@ public class FullscreenActivity extends Activity {
 			
 			oh.setRefreshToken(data); 
 			rtTextView.setText(oh.getRefreshToken(false));
-
+			oidcTextView.setText(oh.OIDCClaims);
 	
 			
 		}
@@ -186,15 +191,35 @@ public class FullscreenActivity extends Activity {
 		final View RTView = findViewById(R.id.RT_text);
 		TextView rtTextView = (TextView) RTView;
 		rtTextView.setText(OAuthHelper.readRefreshToken());
+		
+		final View OIDCView = findViewById(R.id.OIDC_text);
+		TextView oidcTextView = (TextView) OIDCView;
+		oidcTextView.setText(OAuthHelper.OIDCClaims);		
 
 		// System.out.println(uriUrl);
 	}
-
+	public void click_call_userinfo(View view) {
+		// Do something in response to button
+//		function_name="id";
+//		final View controlsView = findViewById(R.id.fullscreen_content_controls);
+		final View contentView = findViewById(R.id.APICall_text);
+		TextView t = (TextView) contentView;
+		
+		
+		OAuthHelper oh = new OAuthHelper(this);
+		String text = oh.getUserInfo();
+		if (!text.isEmpty())
+			t.setText(OAuthHelper.fromJSONtoTable(text));
+		else 
+			t.setText("Error:  Could not execute");
+		
+		// System.out.println(uriUrl);
+	}
 	public void click_callapi_id(View view) {
 		// Do something in response to button
 //		function_name="id";
 //		final View controlsView = findViewById(R.id.fullscreen_content_controls);
-		final View contentView = findViewById(R.id.fullscreen_content);
+		final View contentView = findViewById(R.id.APICall_text);
 		TextView t = (TextView) contentView;
 		
 		
@@ -211,7 +236,7 @@ public class FullscreenActivity extends Activity {
 			// Do something in response to button
 //			function_name="time";
 //			final View controlsView = findViewById(R.id.fullscreen_content_controls);
-			final View contentView = findViewById(R.id.fullscreen_content);
+			final View contentView = findViewById(R.id.APICall_text);
 			TextView t = (TextView) contentView;
 			
 			//t.setText("");
@@ -228,7 +253,7 @@ public class FullscreenActivity extends Activity {
 			// Do something in response to button
 //			function_name="SetRefreshToken";
 //			final View controlsView = findViewById(R.id.fullscreen_content_controls);
-			final View contentView = findViewById(R.id.fullscreen_content);
+			final View contentView = findViewById(R.id.APICall_text);
 			TextView t = (TextView) contentView;
 			
 			t.setText("");
@@ -243,6 +268,11 @@ public class FullscreenActivity extends Activity {
 			final View RTView = findViewById(R.id.RT_text);
 			TextView rtTextView = (TextView) RTView;
 			rtTextView.setText(text);
+			
+			final View OIDCView = findViewById(R.id.OIDC_text);
+			TextView oidcTextView = (TextView) OIDCView;
+			oidcTextView.setText(OAuthHelper.OIDCClaims);		
+
 
 			
 
