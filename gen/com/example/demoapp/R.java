@@ -25,8 +25,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int APICall_Label=0x7f07000e;
-        public static final int APICall_text=0x7f07000f;
+        public static final int APICall_Label=0x7f070015;
+        public static final int APICall_text=0x7f070016;
         public static final int AuthResourceCredentials=0x7f070009;
         public static final int Button_Clear=0x7f070003;
         public static final int Button_call_userinfo=0x7f070004;
@@ -38,9 +38,16 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int RT_text=0x7f07000b;
         public static final int bottom_buttons=0x7f070001;
         public static final int button_auth=0x7f070002;
+        public static final int button_exec=0x7f070014;
         public static final int fullscreen_content=0x7f070000;
+        public static final int params=0x7f070013;
+        public static final int params_label=0x7f070012;
+        public static final int url=0x7f070011;
+        public static final int url_label=0x7f070010;
         public static final int userName=0x7f070007;
         public static final int userPassword=0x7f070008;
+        public static final int userinfo_Label=0x7f07000e;
+        public static final int userinfo_text=0x7f07000f;
     }
     public static final class layout {
         public static final int activity_fullscreen=0x7f030000;
@@ -58,7 +65,12 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int clear=0x7f050004;
         public static final int dummy_button=0x7f050001;
         public static final int dummy_content=0x7f050002;
+        public static final int exec=0x7f050010;
+        public static final int params_label=0x7f05000f;
         public static final int submit_auth=0x7f050009;
+        public static final int url_label=0x7f05000e;
+        public static final int userinfo_label=0x7f05000d;
+        public static final int web_service_url=0x7f050011;
     }
     public static final class style {
         /** 

@@ -12,6 +12,12 @@
 	<string name="callapi_time">Call\nAPI\nTime</string>
 	<string name="submit_auth">Resource Owner Flow</string>
 	<string name="RefreshToken">Refresh Token: </string>
-	<string name="OIDC">OIDC Claims: </string>
+	<string name="OIDC">ID Token: </string>
 	<string name="APICall_Label">API Call Return Values: </string>
+	<string name="userinfo_label">Claims: </string>
+	<string name="url_label">WS URL: </string>
+	<string name="params_label">Post Parameters: </string>
+	<string name="exec">Execute Service </string>
+	<string name="web_service_url">http://pbens.com/REST_samples/index.php?method=hello&amp;format=json </string>
+	
 </resources>

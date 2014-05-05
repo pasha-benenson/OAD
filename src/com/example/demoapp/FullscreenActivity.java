@@ -18,12 +18,7 @@ import android.widget.EditText;
 //import android.widget.LinearLayout;
 import android.widget.TextView;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- * 
- * @see SystemUiHider
- */
+
 public class FullscreenActivity extends Activity {
 	/**
 	 * Whether or not the system UI should be auto-hidden after
@@ -74,17 +69,21 @@ public class FullscreenActivity extends Activity {
 		rtTextView.setText(oh.getRefreshToken(false));
 		
 		TextView oidcTextView = (TextView) OIDCView;
-		oidcTextView.setText(oh.OIDCClaims);
+		oidcTextView.setText(OAuthHelper.OIDCClaims);
 		
 		String action = intent.getAction();
+		
 		if (action.equals(Intent.ACTION_VIEW)) {
+			/*
+			 * ACTIION_VIEW means that app is launched by the browser redirect from the Authorization Code Flow data will contain the code 
+			 */
 			String data = intent.getDataString();
 
 			System.out.println(data);
 			
 			oh.setRefreshToken(data); 
 			rtTextView.setText(oh.getRefreshToken(false));
-			oidcTextView.setText(oh.OIDCClaims);
+			oidcTextView.setText(OAuthHelper.OIDCClaims);
 	
 			
 		}
@@ -173,7 +172,7 @@ public class FullscreenActivity extends Activity {
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
 	}
 
-	/** Called when the user clicks the Send button */
+	
 	public void click_auth(View view) {
 		// Do something in response to button
 		OAuthHelper oh = new OAuthHelper(this);
@@ -202,7 +201,7 @@ public class FullscreenActivity extends Activity {
 		// Do something in response to button
 //		function_name="id";
 //		final View controlsView = findViewById(R.id.fullscreen_content_controls);
-		final View contentView = findViewById(R.id.APICall_text);
+		final View contentView = findViewById(R.id.userinfo_text);
 		TextView t = (TextView) contentView;
 		
 		
@@ -225,6 +224,26 @@ public class FullscreenActivity extends Activity {
 		
 		OAuthHelper oh = new OAuthHelper(this);
 		String text = oh.callapi("?method=id");
+		if (!text.isEmpty())
+			t.setText(OAuthHelper.fromJSONtoTable(text));
+		else 
+			t.setText("Error:  Could not execute");
+		
+		// System.out.println(uriUrl);
+	}
+	
+	public void click_exec(View view) {
+		// Do something in response to button
+//		function_name="id";
+//		final View controlsView = findViewById(R.id.fullscreen_content_controls);
+		final View contentView = findViewById(R.id.APICall_text);
+		TextView t = (TextView) contentView;
+		
+		EditText editText = (EditText)findViewById(R.id.url);
+		String REST_url = editText.getText().toString();
+		
+		OAuthHelper oh = new OAuthHelper(this);
+		String text = oh.callREST(REST_url);
 		if (!text.isEmpty())
 			t.setText(OAuthHelper.fromJSONtoTable(text));
 		else 

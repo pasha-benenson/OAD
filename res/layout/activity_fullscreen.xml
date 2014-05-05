@@ -20,8 +20,8 @@
         android:keepScreenOn="true"
         android:text="@string/dummy_content"
         android:textColor="#33b5e5"
-        android:textSize="16sp"
         
+        android:textSize="10sp" 
         android:textAlignment="0" />
 
     <!--
@@ -52,7 +52,7 @@
                 android:layout_gravity="start|top"
                 android:onClick="click_auth"
                 android:text="@string/authenticate"
-                android:textSize="16sp" />
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/Button_Clear"
@@ -61,7 +61,7 @@
                 android:layout_gravity="start|left"
                 android:onClick="click_clear"
                 android:text="@string/clear" 
-                android:textSize="16sp"/>
+                android:textSize="10sp"/>
 
             <Button
                 android:id="@+id/Button_call_userinfo"
@@ -69,7 +69,7 @@
                 android:layout_height="match_parent"
                 android:onClick="click_call_userinfo"
                 android:text="@string/call_userinfo" 
-                android:textSize="16sp"/>
+                android:textSize="10sp"/>
             
             <Button
                 android:id="@+id/Button_callapi_id"
@@ -77,7 +77,7 @@
                 android:layout_height="match_parent"
                 android:onClick="click_callapi_id"
                 android:text="@string/callapi_id"
-                android:textSize="16sp" />
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/Button_callapi_time"
@@ -85,7 +85,7 @@
                 android:layout_height="match_parent"
                 android:onClick="click_callapi_time"
                 android:text="@string/callapi_time"
-                android:textSize="16sp" />
+                android:textSize="10sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -100,7 +100,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName" >
+                android:inputType="text" 
+                android:textSize="10sp" 
+                
+                >
 
                 <requestFocus />
             </EditText>
@@ -110,7 +113,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPassword" />
+                android:inputType="textPassword" 
+                android:textSize="10sp" 
+                />
 
             <Button
                 android:id="@+id/AuthResourceCredentials"
@@ -118,7 +123,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="click_AuthResourceCredentials"
-                android:text="@string/submit_auth" />
+                android:text="@string/submit_auth"
+                android:textSize="10sp"  />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -128,14 +134,17 @@
                     android:id="@+id/RT_Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/RefreshToken" />
+                    android:text="@string/RefreshToken"
+                    android:textSize="10sp"  />
 
                 <TextView
                     android:id="@+id/RT_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" 
+                    android:textSize="10sp" 
+                    />
 
             </LinearLayout>
             <LinearLayout
@@ -146,17 +155,91 @@
                     android:id="@+id/OIDC_Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/OIDC" />
+                    android:text="@string/OIDC" 
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/OIDC_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="10sp"  />
 
-            </LinearLayout>            
+            </LinearLayout>  
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/userinfo_Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/userinfo_label"
+                    android:textSize="10sp"  />
+
+                <TextView
+                    android:id="@+id/userinfo_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceSmall" 
+                    android:textSize="10sp" />
+
+            </LinearLayout>               
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/url_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/url_label" 
+                    android:textSize="10sp"/>
+
+                <EditText
+                    android:id="@+id/url"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                
+	                android:inputType="textUri"    
+	                android:textSize="10sp"    
+	                android:text="@string/web_service_url" />
+	          
+
+            </LinearLayout>    
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/params_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/params_label" 
+                    android:textSize="10sp"/>
+
+                <EditText
+                    android:id="@+id/params"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                
+	                android:inputType="text"     
+	                android:textSize="10sp"                />
+
+            </LinearLayout>  
+                      
+             <Button
+                android:id="@+id/button_exec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                
+                android:onClick="click_exec"
+                android:text="@string/exec"
+                android:textSize="10sp" />
+             
+             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
@@ -164,16 +247,18 @@
                     android:id="@+id/APICall_Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/APICall_Label" />
+                    android:text="@string/APICall_Label" 
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/APICall_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" 
+                    android:textSize="10sp" />
 
-            </LinearLayout>            
+            </LinearLayout> 
             
         </LinearLayout>
 

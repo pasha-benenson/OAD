@@ -26,7 +26,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 //import net.oauth.jsontoken;
-import org.json.*;
+//import org.json.*;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -37,24 +37,25 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Base64;
-//import android.content.*;
+
 
 public class OAuthHelper {
 	public static String RefreshToken="";
 	public static String AccessToken="";
 	public static String OIDCClaims="";
-	public static final String PREFS_NAME = "OAuth_demo_PREF_NAME";
+//	public static final String PREFS_NAME = "OAuth_demo_PREF_NAME";
 	private static Activity activity;
 	private static final String BaseURL = "https://sso.pbens.com:9031";
 	private static final String UserInfo = "/idp/userinfo.openid";
 	private static final String AuthEndPoint="/as/authorization.oauth2"; 
 	private static final String TokenEndPoint="/as/token.oauth2";
-//	private static final String AuthEndPointParams = "?client_id=mobile_client&response_type=code&pfidpadapterid=Form1";
+
 	private static final String clientId = "mobile_client2";
 	private static final String clientSecret = "lkjlkj";
-	private static final String AuthEndPointParams = "?client_id=" + clientId + "&response_type=code&PartnerIdpId=PBENS:SAML2&scope=openid%20profile%20address%20email%20phone";
-	
-    private static final String AuthUrl = BaseURL + AuthEndPoint + AuthEndPointParams;
+	private static final String scope="openid%20profile%20address%20email%20phone";//openid scope is required for OpenIdConnect tokens to be returned
+	private static final String AuthEndPointParams = "?client_id=" + clientId + "&response_type=code&PartnerIdpId=PBENS:SAML2&scope=" + scope;
+	//	 AuthEndPointParams = "?client_id=mobile_client&response_type=code&pfidpadapterid=Form1&scope=openid%20profile%20address%20email%20phone";
+    private static final String AuthCodeFlowUrl = BaseURL + AuthEndPoint + AuthEndPointParams;
 
     private static final String WebServiceURL = "http://pbens.com/api/index.php";
 	static Time expires=new Time();
@@ -105,7 +106,11 @@ public class OAuthHelper {
 	public  String setRefreshToken(String data){
 		return callRefreshToken(data,"","");
 	}
-	
+	/*
+	 * Get RefreshToken either out of Code or UserNamePassword
+	 * and setRefreshToken, AccessToken, IDToken, etc..
+	 * 
+	 */
 	private  String callRefreshToken(String data, String Username, String Password){
 		
 		
@@ -215,10 +220,17 @@ public class OAuthHelper {
 		}
 		return RefreshToken;
 	}
+	/*
+	 * Read refresh token out of storage (Shared Memory Space)
+	 * */
 	public static  String readRefreshToken(){
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
             return preferences.getString("RefreshToken","");            		
 	}	
+	/*
+	 * get RefreshToken ( either from variable, or Shared Memory or by calling Authorization Codeflow )
+	 * */
+	
 	public   String getRefreshToken(boolean authenticate){
 		System.out.println("getRefreshToken "+ RefreshToken );
 
@@ -237,6 +249,9 @@ public class OAuthHelper {
             
 		
 	}
+	/*
+	 * Helper function for creating POST parameters
+	 * */
 	private static String getQuery(List<NameValuePair> params) throws UnsupportedEncodingException
 	{
 	    StringBuilder result = new StringBuilder();
@@ -256,6 +271,10 @@ public class OAuthHelper {
 
 	    return result.toString();
 	}
+	
+	/*
+	 * call api on pbens.com that validates Access Token against PF
+	 * */
 	public  String callapi(String queryparameter){
 		URL hurl;
 		try {
@@ -301,14 +320,98 @@ public class OAuthHelper {
 		
 	}
 
+	/*
+	 * Call Web Service
+	 * */
+	public  String callREST(String surl){
+		URL hurl;
+		BufferedReader br;
+		try {
+			hurl = new URL(surl);
+	
+		
+			HostnameVerifier v = new HostnameVerifier() {
+				@Override
+					public boolean verify(String arg0, SSLSession arg1) {
+						// TODO Auto-generated method stub
+						return true;
+					}
+				};
+
+
+
+
+			
+			if(surl.contains("https://")) {
+				HttpsURLConnection https = (HttpsURLConnection) hurl.openConnection();
+				https.setHostnameVerifier(v);
+				https.setReadTimeout(10000);
+				https.setConnectTimeout(15000);
+				https.setRequestMethod("GET");
+				https.setDoInput(true);
+				https.setDoOutput(true);
+				
+	            https.setRequestProperty("Authorization", "Bearer " + getAccessToken());
+	
+				https.connect();
+			      int status = https.getResponseCode();
+	
+			    System.out.println("status code= " + status);
+			        
+			    br = new BufferedReader(new InputStreamReader(https.getInputStream()));
+			}
+			else {				
+			HttpURLConnection https = (HttpURLConnection) hurl.openConnection();
+			
+			https.setReadTimeout(10000);
+			https.setConnectTimeout(15000);
+			https.setRequestMethod("GET");
+			https.setDoInput(true);
+			https.setDoOutput(true);
+			
+            https.setRequestProperty("Authorization", "Bearer " + getAccessToken());
+
+			https.connect();
+		      int status = https.getResponseCode();
+
+		    System.out.println("status code= " + status);
+		        
+		    br = new BufferedReader(new InputStreamReader(https.getInputStream()));
+
+				
+			}
+			
+		    StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+			br.close();
+			String rdata=sb.toString();	
+			System.out.println("response data: "+ rdata);
+			JSONObject json = new JSONObject(rdata);
+			System.out.println(json);
+
+		return json.getString("data");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+		
+	}
+    /*
+     * Get Access Token, get access token change activate to true to automatically start Authorization code flow
+     */
 	private  String getAccessToken() {
+		boolean activate=false;
 		Time t = new Time();
 		t.setToNow();
 		System.out.println("getAccessToken "+ AccessToken + expires.toString());
 		if (AccessToken!="" && expires.after(t))
 			return AccessToken;
 		else{
-			RefreshToken=getRefreshToken(false);
+			RefreshToken=getRefreshToken(activate);
 			// use refresh token to get access token
 			URL hurl;
 			try {
@@ -385,20 +488,27 @@ public class OAuthHelper {
 			return AccessToken;
 		}
 	}
+	/*
+	 * Start Authorization Code Flow 
+	 * */
 	public void authenticate(){
 		System.out.println("about to  authenticate" );
 		Time time=new Time();
 		time.setToNow();
 		
- //   	Uri uriUrl = Uri.parse("https://sso.pbens.com:9031/as/authorization.oauth2?client_id=mobile_client&response_type=code&pfidpadapterid=Form1&time=" + time.toString());
-    	Uri uriUrl = Uri.parse(AuthUrl + "&time=" + time.toString());
+    	//adding nonce to make sure browser does not cash old response
+		Uri uriUrl = Uri.parse(AuthCodeFlowUrl + "&nonce=" + time.toString());
 
     	Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
 		activity.startActivity(launchBrowser);
 	}
+	/*
+	 * Clear all values, the app forgets everything and acts as though it was just downloaded
+	 * */
 	public static void clear(){
 		RefreshToken="";
 		AccessToken="";
+		OIDCClaims="";
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 		Editor edit = preferences.edit();
@@ -407,11 +517,17 @@ public class OAuthHelper {
         edit.commit();	
 
 	}
+	/*
+	 * Quick and Dirty convert json into a table looking string for easy viewing
+	 * */
 	public static String fromJSONtoTable(String sjson){
 		
 		return sjson.replace(",", ",\n");
 	}
-	
+	/*
+	 * Call getuserinfo endpoint to get identinty claims for OpenIDConnect  ( notice AccessToken and openid scope is required for this operation)
+	 * 
+	 */
 	public  String getUserInfo(){
 		URL hurl;
 		try {
